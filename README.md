@@ -5,7 +5,7 @@ becomes the instrument: send it MIDI from a keyboard, sequencer, or DAW
 through the mDS slot-2 cartridge, and it plays the notes on the DS sound chip
 with pulse, sample, noise, and FM voices.
 
-Made by hobbychop, hobbychop.com. Version 0.6.
+Made by hobbychop.
 
 ## Getting started
 
