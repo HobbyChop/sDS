@@ -1,4 +1,4 @@
-<td align="center"><img src="pics/sDS.png" width="300"><br></td>
+<td align="center"><img src="sDS.png" width="300"><br></td>
 
 # sDS
 
