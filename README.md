@@ -1,4 +1,4 @@
-<td align="center"><img src="sDS.png" width="500"><br></td>
+<p align="center"><img src="sDS.png" width="500"></p>
 
 # sDS
 
@@ -16,38 +16,46 @@ Made by hobbychop.
 3. Press A to detect the cart. The top screen shows when it is connected.
 4. Plug MIDI into the mDS and play.
 
-The top screen is your monitor: connection, mode, and incoming MIDI. The
-bottom screen is the LAB, where you shape the sound live with the d-pad.
+The top screen is your monitor: connection, mode, the channel map, and a
+live scope of the audio output. The bottom screen is the LAB, where you
+shape the sound live with the d-pad.
 
 ## Playing it
 
 Switch between two modes with B.
 
-Mono is the classic mGB layout: six separate instruments, one per MIDI
-channel, each playing one note at a time.
+Mono is the classic mGB layout: nine separate instruments (MIDI channels
+1-9), each one monophonic. The default voices are spread across the channels:
 
 - Channels 1 and 2: pulse
 - Channel 3: sample
 - Channel 4: noise
 - Channels 5 and 6: FM
+- Channels 7, 8, 9: pulse, sample, FM
+
+Send a Program Change on a channel to change its voice (0 pulse, 1 sample,
+2 noise, 3 FM), so any channel can be any voice. The LAB follows along.
 
 Poly turns the whole synth into one instrument that plays chords. Choose its
 voice (pulse, sample, noise, or FM) in the LAB, by Program Change, or with
 CC 21.
 
 Channel 10 is always a General MIDI drum kit in both modes. The note number
-picks the drum (36 kick, 38 snare, 42 closed hat, 46 open hat, and so on).
+picks the drum (36 kick, 38 snare, 42 closed hat, 46 open hat, and so on);
+the DRUMS page in the LAB sets the overall drum level.
 
-Pitch bend covers two semitones, and note velocity sets loudness.
+Pitch bend defaults to two semitones and honours the standard RPN bend-range
+message for wider ranges; note velocity sets loudness.
 
 ## Buttons
 
 - A: detect the cart
 - B: switch between Mono and Poly
-- Start: panic, silence everything
+- Start: open the PRESETS page
 - D-pad up and down: pick a setting in the LAB
 - D-pad left and right: change the value
-- L and R: in Mono, choose which channel the LAB edits
+- L and R: switch LAB page (channels, DRUMS, PRESETS)
+- X, Y, Select: on the PRESETS page, save / load / rename a slot
 
 ## Shaping the sound
 
@@ -61,6 +69,7 @@ Performance
 - CC 10: Pan
 - CC 1: Vibrato depth
 - CC 76: Vibrato rate
+- CC 77: Pitch sweep (64 = off)
 
 Envelope
 
@@ -77,13 +86,26 @@ Tone
 - CC 79: FM feedback
 - CC 19: Noise rate
 - CC 20: Sample wave
-- CC 21: Poly voice type
+- CC 21: Voice type
 
 Panic and reset
 
 - CC 120: All sound off
 - CC 121: Reset controllers
 - CC 123: All notes off
+
+## Presets
+
+The PRESETS page (press Start) holds 32 slots, each a snapshot of the whole
+synth: all nine channels, the poly instrument, and the drum level.
+
+- Up and down pick a slot; left and right jump by 8.
+- X saves the current synth into the slot; Y loads it back.
+- Select renames the slot (up and down change the letter, left and right move
+  the cursor, Select again to finish).
+
+Presets are written to your SD card as `sds_presets.dat`, so they survive a
+power-off. If the card cannot be opened they still work for the session.
 
 ## License
 
