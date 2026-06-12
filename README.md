@@ -1,120 +1,107 @@
-# sDS - mGB-style DS MIDI synth (v0.6)
+# sDS
 
-**sDS** is an **mGB-style MIDI synthesizer for the Nintendo DS / DS Lite**.
-The DS itself is the synth: feed it MIDI through the
-[mDS slot-2 cart](../rp2040/) and it plays the notes on its own sound
-hardware - pulse, sample, noise and FM voices.
+An mGB-style MIDI synthesizer for the Nintendo DS and DS Lite. Your DS
+becomes the instrument: send it MIDI from a keyboard, sequencer, or DAW
+through the mDS slot-2 cartridge, and it plays the notes on the DS sound chip
+with pulse, sample, noise, and FM voices.
 
-It is the **baseline ROM** that ships with the mDS, and the reference other
-slot-2 MIDI apps build on. Builds to `sds_synth.nds`.
+Made by hobbychop, hobbychop.com. Version 0.6.
 
-> Made by **hobbychop** - [hobbychop.com](https://hobbychop.com)
+## Getting started
 
-## At a glance
+1. Copy `sds_synth.nds` onto your slot-1 flashcart and launch it.
+2. Put the mDS cartridge in the slot-2 port.
+3. Press A to detect the cart. The top screen shows when it is connected.
+4. Plug MIDI into the mDS and play.
 
-| | |
-|---|---|
-| **Platform** | Nintendo DS / DS Lite (runs from a slot-1 flashcart; DSi+ dropped slot-2) |
-| **MIDI in** | via the mDS slot-2 cart over the `"STDS"` v2 protocol (event ring + clock mirror) |
-| **Engine** | 4 voice types: PULSE (PSG square), SAMPLE (10 wavetables), NOISE (LFSR), FM (2-op wavetable) |
-| **Voices** | PSG square ch 8-13, PSG noise ch 14-15, PCM ch 0-7 (SAMPLE + FM + drums share the pool) |
-| **Modes** | MONO (6 monophonic instruments, classic mGB multitimbral) / POLY (one polyphonic instrument) |
-| **Drums** | GM percussion kit on MIDI channel 10 (procedural, both modes) |
-| **Control** | live on the DS (d-pad LAB editor) and over MIDI (full CC map) |
-| **Build** | devkitARM + libnds (calico) |
-| **Version** | v0.6 (see `source/version.h`) |
+The top screen is your monitor: connection, mode, and incoming MIDI. The
+bottom screen is the LAB, where you shape the sound live with the d-pad.
 
-## Voices
+## Playing it
 
-| Voice  | DS hardware          | Pool | Notes |
-|--------|----------------------|------|-------|
-| PULSE  | PSG square ch 8-13   | 6    | hardware duty; soft-knee on loud notes |
-| NOISE  | PSG noise ch 14-15   | 2    | LFSR; CC19 picks one of 8 rate "octaves" |
-| SAMPLE | PCM ch 0-7 (shared)  | 8*   | looped single-cycle wave, 10 types (saw/square/tri/sine/pulse25/pulse12/dblsine/organ/softsq/bright) |
-| FM     | PCM ch 0-7 (shared)  | 8*   | 2-op wavetable: ratio, depth, modulator self-feedback, baked at note-on |
+Switch between two modes with B.
 
-\* SAMPLE, FM and the drum one-shots share the 8 PCM channels via a per-pool
-LRU allocator. Voices retire at sub-LSB envelope level (no click).
+Mono is the classic mGB layout: six separate instruments, one per MIDI
+channel, each playing one note at a time.
 
-## Modes
+- Channels 1 and 2: pulse
+- Channel 3: sample
+- Channel 4: noise
+- Channels 5 and 6: FM
 
-Toggle with **B**.
+Poly turns the whole synth into one instrument that plays chords. Choose its
+voice (pulse, sample, noise, or FM) in the LAB, by Program Change, or with
+CC 21.
 
-- **MONO** (default): MIDI channels 1-6 are six independent monophonic
-  instruments (1,2 PULSE / 3 SAMPLE / 4 NOISE / 5,6 FM). Classic mGB feel,
-  multitimbral.
-- **POLY**: the whole synth becomes **one polyphonic instrument** whose voice
-  type you choose (FM / PULSE / SAMPLE / NOISE). Pick it in the LAB, via
-  Program Change, or CC 21.
+Channel 10 is always a General MIDI drum kit in both modes. The note number
+picks the drum (36 kick, 38 snare, 42 closed hat, 46 open hat, and so on).
 
-**Channel 10** is always a General-MIDI drum kit in both modes (note number
-picks the drum: 36 kick, 38 snare, 42 closed hat, 46 open hat, and so on).
+Pitch bend covers two semitones, and note velocity sets loudness.
 
-## Controls
+## Buttons
 
-On the DS:
+- A: detect the cart
+- B: switch between Mono and Poly
+- Start: panic, silence everything
+- D-pad up and down: pick a setting in the LAB
+- D-pad left and right: change the value
+- L and R: in Mono, choose which channel the LAB edits
 
-| Key    | Action |
-|--------|--------|
-| A      | detect / re-probe the cart |
-| B      | toggle MONO / POLY |
-| START  | panic (all sound off) |
-| d-pad  | drive the LAB (up/down select param, left/right change value) |
-| L / R  | (MONO) switch which channel the LAB edits |
+## Shaping the sound
 
-**Top screen** = cart status + live MIDI monitor. **Bottom screen** = the
-instrument **LAB**: a button-driven parameter editor with a live filled
-**ADSR envelope plot**. The LAB and the MIDI CC map drive the same params.
+Every setting in the LAB also responds to a MIDI control change, so you can
+play it by hand or automate it from your sequencer. The controls below shape
+the current instrument.
 
-## MIDI CC map (summary)
+Performance
 
-| CC | Param         | CC  | Param             |
-|---:|---------------|----:|-------------------|
-| 1  | vibrato depth | 73  | attack            |
-| 76 | vibrato rate  | 75  | decay             |
-| 7  | volume        | 70  | sustain           |
-| 10 | pan           | 72  | release           |
-| 16 | pulse duty    | 17  | FM depth          |
-| 18 | FM ratio      | 79  | FM feedback       |
-| 19 | noise rate    | 20  | sample wave       |
-| 21 | poly type (POLY) | 120/121/123 | all sound off / reset CC / all notes off |
+- CC 7: Volume
+- CC 10: Pan
+- CC 1: Vibrato depth
+- CC 76: Vibrato rate
 
-Pitch bend is +/-2 semitones. Program Change selects the POLY voice type (or,
-in MONO on a SAMPLE channel, the wave). Full detail, channel map and the
-extension guide: [docs/08-synth-app.md](../docs/08-synth-app.md).
+Envelope
 
-## Build & flash
+- CC 73: Attack
+- CC 75: Decay
+- CC 70: Sustain
+- CC 72: Release
 
-Needs **devkitARM + libnds + calico**. From a devkitPro msys2 shell:
+Tone
+
+- CC 16: Pulse duty
+- CC 17: FM depth
+- CC 18: FM ratio
+- CC 79: FM feedback
+- CC 19: Noise rate
+- CC 20: Sample wave
+- CC 21: Poly voice type
+
+Panic and reset
+
+- CC 120: All sound off
+- CC 121: Reset controllers
+- CC 123: All notes off
+
+## Building it yourself
+
+You need devkitARM and libnds. From a devkitPro msys2 shell:
 
 ```
 cd ds-rom
 make
 ```
 
-Output: **`sds_synth.nds`**. Copy it to your slot-1 flashcart, insert the mDS
-in slot-2, and feed MIDI into the cart. The launcher banner shows the version.
-
-## Version
-
-**v0.6** - pre-1.0 while the synth is validated on hardware and the drum / FM
-voices are tuned by ear. The version is defined once in
-[`source/version.h`](source/version.h) (`SDS_VERSION`), shown on the
-top-screen banner, and mirrored in the ROM's launcher subtitle (`Makefile`).
+That produces `sds_synth.nds`.
 
 ## License
 
-Licensed under **[CC BY-NC-SA 4.0](../LICENSE)** (Attribution-NonCommercial-
-ShareAlike). You may use, modify, and share sDS for **non-commercial**
-purposes, with attribution and under the same license; **selling sDS, mDS
-units, or derivatives is not permitted**.
+Released under CC BY-NC-SA 4.0. You are free to use, change, and share sDS for
+non-commercial purposes, with attribution, under the same license. Selling sDS
+or mDS units is not allowed.
 
-**Intent:** use sDS however you like, including to make, perform, record, and
-**sell music** - the license does not cover what you create with it. The
-restriction is only on commercial dealing in the device / ROM itself: no
-selling mDS units or kits, no manufacturing for sale, no selling modified
-firmware or hardware.
+You can make, perform, record, and sell music with it. The license only
+restricts selling the device or the software itself.
 
-The "sDS" / "mDS" names are reserved by the author (trademark is separate from
-this copyright license). For commercial use, contact the author via
-[hobbychop.com](https://hobbychop.com).
+The names sDS and mDS are reserved by the author. For commercial use, get in
+touch through hobbychop.com.
