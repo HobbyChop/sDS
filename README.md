@@ -83,17 +83,6 @@ Panic and reset
 - CC 121: Reset controllers
 - CC 123: All notes off
 
-## Building it yourself
-
-You need devkitARM and libnds. From a devkitPro msys2 shell:
-
-```
-cd ds-rom
-make
-```
-
-That produces `sds_synth.nds`.
-
 ## License
 
 Released under CC BY-NC-SA 4.0. You are free to use, change, and share sDS for
