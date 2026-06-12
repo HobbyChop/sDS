@@ -1,3 +1,5 @@
+<td align="center"><img src="pics/sDS.png" width="300"><br></td>
+
 # sDS
 
 An mGB-style MIDI synthesizer for the Nintendo DS and DS Lite. Your DS
