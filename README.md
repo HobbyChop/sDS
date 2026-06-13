@@ -22,7 +22,7 @@ shape the sound live with the d-pad.
 
 ## Playing it
 
-Switch between two modes with B.
+Switch between three modes with B.
 
 Mono is the classic mGB layout: nine separate instruments (MIDI channels
 1-9), each one monophonic. The default voices are spread across the channels:
@@ -36,13 +36,19 @@ Mono is the classic mGB layout: nine separate instruments (MIDI channels
 Send a Program Change on a channel to change its voice (0 pulse, 1 sample,
 2 noise, 3 FM), so any channel can be any voice. The LAB follows along.
 
+Semi is the same per-channel layout as Mono, but each channel can play
+chords: extra notes borrow from a shared pool of six spare voices (first
+come, first served) using that channel's settings. The pool is shared across
+all channels, so a big chord on one channel uses it up.
+
 Poly turns the whole synth into one instrument that plays chords. Choose its
 voice (pulse, sample, noise, or FM) in the LAB, by Program Change, or with
 CC 21.
 
-Channel 10 is always a General MIDI drum kit in both modes. The note number
-picks the drum (36 kick, 38 snare, 42 closed hat, 46 open hat, and so on);
-the DRUMS page in the LAB sets the overall drum level.
+Channel 10 is always a General MIDI drum kit in every mode. The note number
+picks the drum (36 kick, 38 snare, 42 closed hat, 46 open hat, and so on).
+The DRUMS page in the LAB tweaks the kit: pick a drum, then set its tune,
+decay, level, and pan, plus the master level for all of them.
 
 Pitch bend defaults to two semitones and honours the standard RPN bend-range
 message for wider ranges; note velocity sets loudness.
@@ -50,11 +56,11 @@ message for wider ranges; note velocity sets loudness.
 ## Buttons
 
 - A: detect the cart
-- B: switch between Mono and Poly
+- B: cycle Mono / Semi / Poly
 - Start: open the PRESETS page
 - D-pad up and down: pick a setting in the LAB
 - D-pad left and right: change the value
-- L and R: switch LAB page (channels, DRUMS, PRESETS)
+- L and R: switch LAB page (channels, DRUMS)
 - X, Y, Select: on the PRESETS page, save / load / rename a slot
 
 ## Shaping the sound
@@ -66,10 +72,10 @@ the current instrument.
 Performance
 
 - CC 7: Volume
-- CC 10: Pan
+- CC 10: Pan (64 = center)
 - CC 1: Vibrato depth
-- CC 76: Vibrato rate
-- CC 77: Pitch sweep (64 = off)
+- CC 76: Vibrato rate (speed, not depth)
+- CC 77: Pitch sweep (64 = off, below sweeps down, above sweeps up)
 
 Envelope
 
@@ -97,15 +103,20 @@ Panic and reset
 ## Presets
 
 The PRESETS page (press Start) holds 32 slots, each a snapshot of the whole
-synth: all nine channels, the poly instrument, and the drum level.
+synth: all nine channels, the poly instrument, and the full drum kit (the
+master level plus every drum's tune, decay, level, and pan).
 
 - Up and down pick a slot; left and right jump by 8.
-- X saves the current synth into the slot; Y loads it back.
+- X saves the current synth into the slot and Y loads it back, each after an
+  A=yes / B=no confirmation.
 - Select renames the slot (up and down change the letter, left and right move
   the cursor, Select again to finish).
 
 Presets are written to your SD card as `sds_presets.dat`, so they survive a
 power-off. If the card cannot be opened they still work for the session.
+
+Send MIDI **CC 80** with a value of 0-31 to recall that preset slot from a
+sequencer or controller.
 
 ## License
 
