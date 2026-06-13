@@ -16,9 +16,11 @@ Made by hobbychop.
 3. Press A to detect the cart. The top screen shows when it is connected.
 4. Plug MIDI into the mDS and play.
 
-The top screen is your monitor: connection, mode, the channel map, and a
-live scope of the audio output. The bottom screen is the LAB, where you
-shape the sound live with the d-pad.
+The top screen is your monitor: cart connection, the current mode, how many
+of the 16 hardware voices are sounding, a map of every channel's voice type,
+and a live oscilloscope of the audio output. The bottom screen is the LAB,
+where you shape the sound with the d-pad; as you edit, it draws the current
+instrument's attack/decay/sustain/release envelope as a live graph.
 
 ## Playing it
 
@@ -34,7 +36,8 @@ Mono is the classic mGB layout: nine separate instruments (MIDI channels
 - Channels 7, 8, 9: pulse, sample, FM
 
 Send a Program Change on a channel to change its voice (0 pulse, 1 sample,
-2 noise, 3 FM), so any channel can be any voice. The LAB follows along.
+2 noise, 3 FM), so any channel can be any voice; the monitor's channel map
+updates to match.
 
 Semi is the same per-channel layout as Mono, but each channel can play
 chords: extra notes borrow from a shared pool of six spare voices (first
@@ -66,8 +69,8 @@ message for wider ranges; note velocity sets loudness.
 ## Shaping the sound
 
 Every setting in the LAB also responds to a MIDI control change, so you can
-play it by hand or automate it from your sequencer. The controls below shape
-the current instrument.
+play it by hand or automate it from your sequencer. The LAB shows only the
+controls that apply to the current voice type; all of them are listed below.
 
 Performance
 
