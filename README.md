@@ -5,7 +5,7 @@
 An mGB-style MIDI synthesizer for the Nintendo DS and DS Lite. Your DS
 becomes the instrument: send it MIDI from a keyboard, sequencer, or DAW
 through the mDS slot-2 cartridge, and it plays the notes on the DS sound chip
-with pulse, sample, noise, and FM voices.
+with pulse, wave, noise, FM, and mic-sampler voices.
 
 Made by hobbychop.
 
@@ -30,14 +30,15 @@ Mono is the classic mGB layout: nine separate instruments (MIDI channels
 1-9), each one monophonic. The default voices are spread across the channels:
 
 - Channels 1 and 2: pulse
-- Channel 3: sample
+- Channel 3: wave
 - Channel 4: noise
 - Channels 5 and 6: FM
-- Channels 7, 8, 9: pulse, sample, FM
+- Channels 7, 8, 9: pulse, wave, FM
 
-Send a Program Change on a channel to change its voice (0 pulse, 1 sample,
-2 noise, 3 FM), so any channel can be any voice; the monitor's channel map
-updates to match.
+Send a Program Change on a channel to change its voice (0 pulse, 1 wave,
+2 noise, 3 FM, 4 sampler), so any channel can be any voice; the monitor's
+channel map updates to match. You can also change it on the device: the TYPE
+row at the top of each channel's LAB page cycles the voice.
 
 Semi is the same per-channel layout as Mono, but each channel can play
 chords: extra notes borrow from a shared pool of six spare voices (first
@@ -45,7 +46,7 @@ come, first served) using that channel's settings. The pool is shared across
 all channels, so a big chord on one channel uses it up.
 
 Poly turns the whole synth into one instrument that plays chords. Choose its
-voice (pulse, sample, noise, or FM) in the LAB, by Program Change, or with
+voice (pulse, wave, noise, or FM) in the LAB, by Program Change, or with
 CC 21.
 
 Channel 10 is always a General MIDI drum kit in every mode. The note number
@@ -63,7 +64,7 @@ message for wider ranges; note velocity sets loudness.
 - Start: open the PRESETS page
 - D-pad up and down: pick a setting in the LAB
 - D-pad left and right: change the value
-- L and R: switch LAB page (channels, DRUMS)
+- L and R: switch LAB page (channels, DRUMS, SAMPLES)
 - X, Y, Select: on the PRESETS page, save / load / rename a slot
 
 ## Shaping the sound
@@ -94,7 +95,7 @@ Tone
 - CC 18: FM ratio
 - CC 79: FM feedback
 - CC 19: Noise rate
-- CC 20: Sample wave
+- CC 20: Wave waveform
 - CC 21: Voice type
 
 Panic and reset
@@ -102,6 +103,33 @@ Panic and reset
 - CC 120: All sound off
 - CC 121: Reset controllers
 - CC 123: All notes off
+
+## Sampler
+
+The SAMPLES page (L/R past DRUMS) records short clips from the DS microphone
+and plays them back pitched by the note you press, like a lo-fi sampler. There
+are 32 slots.
+
+- Up and down pick a slot; left and right jump by 8.
+- A records about 3 seconds from the mic into the selected slot. The synth
+  mutes while recording, and the clip is boosted to full volume so even quiet
+  mic takes are usable.
+- X plays the selected slot so you can hear the recording.
+- Y cycles the mic gain.
+
+To play a recording, set a channel's voice to SAMPLER (Program Change value 4,
+CC 21, or the POLY voice). Then on that channel's LAB page:
+
+- SLOT picks which recording it plays.
+- ROOT is the note that plays the clip at its recorded pitch; other notes
+  resample it up or down. FINE nudges the pitch between semitones.
+- START and END trim dead space off the front and back of the clip.
+- MODE sets playback: ONCE plays the whole clip, GATE plays only while the key
+  is held (stops at note-off), LOOP loops the clip so held notes sustain.
+- DRIVE is a loudness boost (overdrive) to push the sample much louder.
+
+Recordings are saved to your SD card (one file per slot) and reload at boot.
+With no SD card they work for the session only.
 
 ## Presets
 
