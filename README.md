@@ -140,11 +140,17 @@ master level plus every drum's tune, decay, level, and pan).
 - Up and down pick a slot; left and right jump by 8.
 - X saves the current synth into the slot and Y loads it back, each after an
   A=yes / B=no confirmation.
+- A resets the whole synth to defaults (also confirmed); your recordings and
+  saved presets are kept.
 - Select renames the slot (up and down change the letter, left and right move
   the cursor, Select again to finish).
 
 Presets are written to your SD card as `sds_presets.dat`, so they survive a
 power-off. If the card cannot be opened they still work for the session.
+
+Your working setup also auto-saves to the SD a moment after you stop editing
+and reloads at boot, so the synth comes back the way you left it without having
+to save a preset first.
 
 Send MIDI **CC 80** with a value of 0-31 to recall that preset slot from a
 sequencer or controller.
